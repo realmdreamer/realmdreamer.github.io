@@ -1,3 +1,32 @@
+.mobile-content {
+  display: none;
+}
+
+/* Desktop-specific styles */
+@media (min-width: 768px) {
+  /* Hide mobile section */
+  .mobile-content {
+      display: none;
+  }
+  /* Show desktop section */
+  .desktop-content {
+      display: block;
+  }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 767px) {
+  /* Show mobile section */
+  .mobile-content {
+      display: block;
+  }
+  /* Hide desktop section */
+  .desktop-content {
+      display: none;
+  }
+}
+
+
 .bg-customcustom {
   background-color: #333333; /* Slightly darker than bg-light */
 }
@@ -6,6 +35,10 @@
   color: #179cd0;
   text-decoration: none;
 }
+.custom-spacing > :first-child {
+  margin-top: 40px; /* Applies only to the first child element */
+}
+
 
 /* latin-ext */
 @font-face {
