@@ -1,0 +1,522 @@
+
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>RealmDreamer: Text-Driven 3D Scene Generation with Inpainting and Depth Diffusion</title>
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:image" content="https://realmdreamer.github.io/img/grid_teaser_img.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1711">
+    <meta property="og:image:height" content="576">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://realmdreamer.github.io/"/>
+    <meta property="og:title" content="RealmDreamer: Text-Driven 3D Scene Generation with Inpainting and Depth Diffusion" />
+    <meta property="og:description" content="We introduce RealmDreamer, a technique for generation of general forward-facing 3D scenes from text descriptions. Our technique optimizes a 3D Gaussian Splatting representation to match complex text prompts. We initialize these splats by utilizing the state-of-the-art text-to-image generators, lifting their samples into 3D, and computing the occlusion volume. We then optimize this representation across multiple views as a 3D inpainting task with image-conditional diffusion models. To learn correct geometric structure, we incorporate a depth diffusion model by conditioning on the samples from the inpainting model, giving rich geometric structure. Finally, we finetune the model using sharpened samples from image generators. Notably, our technique does not require training on any scene-specific dataset and can synthesize a variety of high-quality 3D scenes in different styles, consisting of multiple objects. Its generality addi- tionally allows 3D synthesis from a single image. 
+    ."/>
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="RealmDreamer: Text-Driven 3D Scene Generation with Inpainting and Depth Diffusion" />
+    <meta name="twitter:description" content="We introduce RealmDreamer, a technique for generation of general forward-facing 3D scenes from text descriptions. Our technique optimizes a 3D Gaussian Splatting representation to match complex text prompts. We initialize these splats by utilizing the state-of-the-art text-to-image generators, lifting their samples into 3D, and computing the occlusion volume. We then optimize this representation across multiple views as a 3D inpainting task with image-conditional diffusion models. To learn correct geometric structure, we incorporate a depth diffusion model by conditioning on the samples from the inpainting model, giving rich geometric structure. Finally, we finetune the model using sharpened samples from image generators. Notably, our technique does not require training on any scene-specific dataset and can synthesize a variety of high-quality 3D scenes in different styles, consisting of multiple objects. Its generality addi- tionally allows 3D synthesis from a single image.
+    "/>
+    <meta name="twitter:image" content="https://realmdreamer.github.io/img/grid_teaser_img.png" />
+
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.css">
+    <link rel="stylesheet" href="css/app.css">
+	<link rel="stylesheet" href="css/fontawesome.all.min.css">
+	<link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+
+	<!-- Google tag (gtag.js) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"></script>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+	<script defer src="js/fontawesome.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/synced_video_selector.js"></script>
+
+</head>
+
+<body style="padding: 0%; width: 100%">
+
+    <div class="container-fluid h-100 h-md-100 w-100 d-flex flex-column justify-content-center text-center" style="height:100vh;">
+        <div class="row justify-content-center mb-3 order-md-first">
+            <div class="col-12">
+                <!-- Removed "controls" and added "style='pointer-events: none;'" to prevent interactions -->
+                <video id="myVideo" class="img-fluid w-100 w-md-50" loop autoplay muted playsinline poster="videos/teaser/poster.png">
+                    <source src="videos/teaser/teaser_twitter.mp4" type="video/mp4">
+                </video>
+
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var video = document.getElementById('myVideo');
+
+                    // Function to detect mobile devices
+                    function isMobileDevice() {
+                        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+                    };
+
+                    // Initially disable pointer events for non-mobile devices and then enable after 2 seconds
+                    if (!isMobileDevice()) {
+                        //video.style.pointerEvents = 'none';
+                        setTimeout(function() {
+                            video.setAttribute('controls', '');
+                        }, 1500); // 2000 milliseconds = 2 seconds
+                    } else {
+                        // Enable controls for mobile devices
+                        video.setAttribute('controls', '');
+                    }
+                });
+                </script>
+            </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+            <div class="col-12">
+                <h2><b>RealmDreamer</b>: Text-Driven 3D Scene Generation<br/> with Inpainting and Depth Diffusion</h2>
+            </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+            <div class="col-12">
+                <ul class="list-inline author h6">
+                    <li>
+                        <a href="https://jaidevshriram.com//" target="_blank" class="h6">
+                            Jaidev Shriram
+                        </a><sup>1</sup>*
+                    </li>
+                    <li>
+                        <a href="https://alextrevithick.github.io/" target="_blank" class="h6">
+                            Alex Trevithick
+                        </a><sup>1</sup>*
+                    </li>
+                    <li>
+                        <a href="https://lingjie0206.github.io/" target="_blank" class="h6">
+                            Lingjie Liu
+                        </a><sup>2</sup>
+                    </li>
+                    <li>
+                        <a href="https://cseweb.ucsd.edu/~ravir/" target="_blank" class="h6">
+                            Ravi Ramamoorthi
+                        </a><sup>1</sup>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+            <div class="col-12 h6">
+                <sup>1</sup>University of California, San Diego, &nbsp;<sup>2</sup>University of Pennsylvania &nbsp;
+            </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+            <div class="col-12">
+                * equal contribution
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 h3">
+                <a href="https://arxiv.org/abs/2112.15000" class="btn btn-dark" role="button">Paper</a>
+                <a href="https://arxiv.org/abs/2112.15000" class="btn btn-outline-dark" role="button">Arxiv</a>
+                <a href="https://github.com/jaidevshriram/realmdreamer" class="btn btn-outline-dark" role="button">Code (Soon)</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="container-fluid h-75 h-md-50 w-100 d-flex flex-column justify-content-center text-center header text-white" style="height:100vh;">
+        <div class="row justify-content-center mb-3">
+            <div class="col-12">
+                <h2><b>RealmDreamer</b>: Text-Driven 3D Scene Generation<br/> with Inpainting and Depth Diffusion</h2>
+            </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+            <div class="col-12">
+                <ul class="list-inline author h6">
+                    <li>
+                        <a href="https://jaidevshriram.com//" target="_blank" class="h6">
+                            Jaidev Shriram
+                        </a><sup>1</sup>*
+                    </li>
+                    <li>
+                        <a href="https://alextrevithick.github.io/" target="_blank" class="h6">
+                            Alex Trevithick
+                        </a><sup>1</sup>*
+                    </li>
+                    <li>
+                        <a href="https://lingjie0206.github.io/" target="_blank" class="h6">
+                            Lingjie Liu
+                        </a><sup>2</sup>
+                    </li>
+                    <li>
+                        <a href="https://cseweb.ucsd.edu/~ravir/" target="_blank" class="h6">
+                            Ravi Ramamoorthi
+                        </a><sup>1</sup>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+            <div class="col-12 h6">
+                <sup>1</sup>University of California, San Diego, &nbsp;<sup>2</sup>University of Pennsylvania &nbsp;
+            </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+            <div class="col-12">
+                * equal contribution
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 h3">
+                <a href="https://arxiv.org/abs/2112.15000" class="btn btn-light" role="button">Paper</a>
+                <a href="https://arxiv.org/abs/2112.15000" class="btn btn-outline-light" role="button">Arxiv</a>
+                <a href="https://arxiv.org/abs/2112.15000" class="btn btn-outline-light" role="button">Code (Soon)</a>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="video-background">
+        <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+            <source src="videos/teaser/wipe_4.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+        <div class="flex-center-container"> <!-- New container for flexbox centering -->
+            <div class="content">
+                <!-- Your content here -->
+                <h1>We generate large, explorable 3D scenes from a text-description</h1>
+                <h3>with just <b>pretrained 2D</b> diffusion models</h3>
+                <!-- Buttons and other content -->
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container" id="main">
+
+        <div class="row py-5 align-items-center justify-content-center" id="abstract">
+            <div class="col-md-6">
+                <h1 class="text-center pb-5 text-bold">
+                    <b>Abstract</b>
+                </h1>
+                <p class="text-justify">
+                    We introduce <b>RealmDreamer</b>, a technique for generation of general forward-facing 3D scenes from text descriptions. Our technique optimizes a 3D Gaussian Splatting representation to match complex text prompts. We initialize these splats by utilizing the state-of-the-art text-to-image generators, lifting their samples into 3D, and computing the occlusion volume. We then optimize this representation across multiple views as a 3D inpainting task with image-conditional diffusion models. To learn correct geometric structure, we incorporate a depth diffusion model by conditioning on the samples from the inpainting model, giving rich geometric structure. Finally, we finetune the model using sharpened samples from image generators. Notably, our technique does not require training on any scene-specific dataset and can synthesize a variety of high-quality 3D scenes in different styles, consisting of multiple objects. Its generality addi- tionally allows 3D synthesis from a single image.
+                </p>
+            </div>
+            <!-- <div class="col--md-6">
+                <video class="img-fluid" loop autoplay muted>
+                    <source src="videos/teaser/teaser_twitter.mp4" />
+                </video>
+            </div> -->
+        </div>
+        <br>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row py-5 mt-5 bg-dark">
+            <div class="col-2"></div>
+            <div class="col-md-8">
+                <h1 class="text-center pb-2 text-white">
+				  <b>Results</b>
+                </h1><br>
+
+                <script>
+                    activeMethodPill = "zipnerf"
+                    activeScenePill = document.querySelector('.scene-pill.active-pill');
+                    activeModePill = document.querySelector('.mode-pill.active-pill');
+                </script>
+                
+                <div class="text-center">
+                    <div class="video-container">
+                        <video class="video" style="height: 480px; max-width: 100%;" m id="compVideo0" loop playsinline autoplay muted>
+                            <source src="videos/results/rgb/boat.mp4" />
+                        </video>
+                        <video class="video" style="height: 480px; max-width: 100%;" id="compVideo1" loop playsinline autoplay muted hidden>
+                            <source src="videos/results/depth/boat.mp4" />
+                        </video>
+                    </div>
+                    <div class="text-center" style="color: black;" id="mode-pills">
+                        <div class="btn-group btn-group-sm">
+                            <span class="btn btn-primary mode-pill active" data-value="rgb"
+                                onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
+                                RGB
+                            </span>
+                            <span class="btn btn-primary mode-pill" data-value="depth"
+                                onclick="selectCompVideo(activeMethodPill, activeScenePill, null, this)">
+                                Depth
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <br>
+                    <p class="text-justify text-white" style="text-align: center;" id="prompt-box">A boy sitting in a boat in the middle of the ocean, under the milkyway, anime style</p>
+                    <script>
+                        video0 = document.getElementById("compVideo0");
+                        video1 = document.getElementById("compVideo1");
+
+                        video0.addEventListener('loadedmetadata', function() {
+                            if (activeVidID == 0 && select){
+                                video0.play();
+                                // print video size
+                                console.log(video0.videoWidth, video0.videoHeight);
+                                video0.hidden = false;
+                                video1.hidden = true;
+                            }
+                        });
+
+                        video1.addEventListener('loadedmetadata', function() {
+                            if (activeVidID == 1 && select){
+                                video1.play();
+                                // print video size
+                                console.log(video1.videoWidth, video1.videoHeight);
+                                video0.hidden = true;
+                                video1.hidden = false;
+                            }
+                        });
+                    </script>
+
+                    <div class="pill-row scene-pills" id="scene-pills">
+                        <span class="pill scene-pill" data-value="bear" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/bear.png" alt="bear" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="bedroom3" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/bedroom3.png" alt="bedroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="bust" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/bust.png" alt="bust" width="64">
+                        </span>
+                        <span class="pill scene-pill active" data-value="boat" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/boat.jpg" alt="boat" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="lavender" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/lavender.png" alt="lavender" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="living_room" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/living_room.png" alt="living_room" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="piano" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/piano.jpg" alt="piano" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="resolute" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/resolute.png" alt="resolute" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="astronaut2" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/astronaut2.jpg" alt="astronaut" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="car" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/car.png" alt="car" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="bathroom" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/bathroom2.png" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="surf" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/surf.png" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="victorian" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/victorian.jpg" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="lighthouse" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/lighthouse.png" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="forest" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/forest.jpg" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="kitchen" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/kitchen.png" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="steampunk" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/steampunk.jpg" alt="bathroom" width="64">
+                        </span>
+                        <span class="pill scene-pill" data-value="arcade" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                            <img class="thumbnail-img" src="thumbnails/arcade.jpg" alt="bathroom" width="64">
+                        </span>
+                    </div>
+
+                    <script>
+                        activeMethodPill = document.querySelector('.method-pill.active-pill');
+                        activeScenePill = document.querySelector('.scene-pill.active-pill');
+                        activeModePill = document.querySelector('.mode-pill.active-pill');
+                    </script>
+                </div>
+
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row py-5 align-item-center">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 text-center h-100">
+                <h2 class="fst-italic">Inpainting priors are great for occlusion reasoning</h2>
+                <p class="text-justify pt-4">
+                Using text conditioned 2D diffusion models for 3D scene generation is tricky given the lack of 3D consistency across different samples. We mitigate this by leveraging 2D inpainting priors as novel view estimators instead. By rendering an incomplete 3D model and inpainting unknown regions, we learn to generate consistent 3D scenes.
+                </p>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+
+    <div class="container-fluid bg-secondary text-white">
+        <div class="row py-5 align-item-center">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 text-center h-100">
+                <h2 class=""><b> Image to 3D</b></h2>
+                <p class="text-justify pt-4">
+                    We show that our technique can generate 3D scenes from a single image. This is a challenging task as it requires the model to hallucinate the missing geometry and texture in the scene. We do not require training on any scene-specific dataset.
+                </p>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row py-2 align-item-center">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 text-center">
+                <div class="row">
+                    <div class="col-4"> <!-- Adjust col-6 t`o your preference for smaller screens -->
+                        <img class="img-fluid" src="thumbnails/gate.png" />
+                        <p class="text-center">Input Image</p>
+                    </div>
+                    <div class="col-8"> <!-- Adjust col-6 to your preference for smaller screens -->
+                        <video class="video img-fluid" loop autoplay muted>
+                            <source src="videos/single/gate.mp4" />
+                        </video>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="xkcd" style="font-size: 1.5em;">"The Brandenburg Gate in Berlin, large stone gateway with series of columns and a sculpture of a chariot and horses on stop, clear sky, 4k image, photorealistic"</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row py-5 align-item-center">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 text-center">
+                <div class="row">
+                    <div class="col-4"> <!-- Adjust col-6 to your preference for smaller screens -->
+                        <img class="img-fluid" src="thumbnails/conference.png" />
+                        <p class="text-center">Input Image</p>
+                    </div>
+                    <div class="col-8"> <!-- Adjust col-6 to your preference for smaller screens -->
+                        <video class="video img-fluid" loop autoplay muted>
+                            <source src="videos/single/conference.mp4" />
+                        </video>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="xkcd" style="font-size: 1.5em;">"A minimal conference room, with a long table, a screen on the wall and a whiteboard, 4k image, photorealistic, sharp"</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row py-2 mt-5">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <h1 class="text-center pb-5">
+                    <b>How?</h1></b>
+                </h1>
+                <video class="img-fluid pb-3" loop autoplay muted controls>
+                    <source src="videos/explanation/latest_overview.mov" />
+                </video>
+                <h3>Step 1: Generate a Prototype</h3>
+                <p class="text-justify">
+                    We start by generating a cheap 2D prototype of the 3D scene from a text description using a pretrained text-to-image generator. Given the desired image, we lift its content into 3D using monocular depth estimator, before computing <em>the occlusion volume</em>. This serves as the initialization for a 3D Gaussian Splatting (3DGS) representation.
+                </p>
+
+                <h3 class="pt-4">Step 2: Inpaint Missing Regions</h3>
+                <p class="text-justify">
+                    The generated 3D scene is incomplete and contains missing regions. To fill them in, we leverage a 2D inpainting diffusion model and optimize the splats to match its output over multiple views. An additional depth distillation loss on sampled images ensure the inpainted regions are geometrically plausible.
+                </p>
+
+                <h3 class="pt-4">Step 3: Refine the Scene</h3>
+                <p class="text-justify">
+                    Finally, we refine the 3D model to improve the cohesion between inpainted regions and the prototype by using a vanilla text-to-image diffusion model. An additional sharpness filter ensures the generated samples are more detailed.
+                </p>
+
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+
+    <div class="container-fluid pt-5">
+        <div class="row py-5 mt-5 bg-customcustom">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <h1 class="text-center text-white pb-2"><b>Related Work</b></h1>
+                <p class="text-white">There are many related works that have influenced our technique:</p>
+                <ul class="text-white">
+                    <li><a href="https://dreamfusion3d.github.io/" target="_blank" class="">Dreamfusion</a>, <a href="https://pals.ttic.edu/p/score-jacobian-chaining" target="_blank" class="">Score Jacobian Chaining</a>, and <a href="https://ml.cs.tsinghua.edu.cn/prolificdreamer/" target="_blank" class="">ProlificDreamer</a> pioneer pretrained 2D Diffusion Models for 3D generation.</li>
+                    <li><a href="https://lukashoel.github.io/text-to-room/" target="_blank" class="">Text2Room</a> shows the effectiveness of iterative approaches for indoor scene synthesis.</li>
+                </ul>
+                <p class="text-white">There are also some concurrent work that tackle scene generation or use inpainting models for similar applications:</p>
+                <ul class="text-white">
+                    <li><a href="https://ethanweber.me/nerfiller/" target="_blank" class="">NeRFiller: Completing Scenes via Generative 3D Inpainting</a></li>
+                    <li><a href="https://arxiv.org/abs/2312.03869" target="_blank" class="">Inpaint3D: 3D Scene Content Generation using 2D Inpainting Diffusion</a></li>
+                    <li><a href="https://zqh0253.github.io/SceneWiz3D/" target="_blank" class="">SceneWiz3D: Towards Text-guided 3D Scene Composition</a></li>
+                    <li><a href="https://eckertzhang.github.io/Text2NeRF.github.io/" target="_blank" class="">Text2NeRF: Text-Driven 3D Scene Generation with Neural Radiance Fields</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+    
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <h1 class="text-center pt-5 pb-3">
+                    <b>Citation</b>
+                </h1>
+                <div class="form-group">
+				  <p class="text-justify">
+                    If you find our work interesting, please consider citing us!
+                </p>
+                <pre class="citation">
+
+    @article{shriram2024realmdreamer,
+        title={RealmDreamer: Text-Driven 3D Scene Generation with 
+                Inpainting and Depth Diffusion},
+        author={Jaidev Shriram and Alex Trevithick and Lingjie Liu and Ravi Ramamoorthi},
+        journal={arXiv},
+        year={2024}
+    }
+                </pre>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 col-md-offset-2">
+                <h1 class="text-center py-4">
+                    <b>Acknowledgements</b>
+                </h1>
+                <p class="text-justify">
+                    We thank Jiatao Gu and Kai-En Lin for early discussions, Aleksander Holynski and Ben Poole for later discussions. We thank Michelle Chiu for video design help. This work was supported in part by an NSF graduate Fellowship, ONR grant N00014-23-1-2526, NSF CHASE-CI Grants 2100237 and 2120019, gifts from Adobe, Google, Qualcomm, Meta, the Ronald L. Graham Chair, and the UC San Diego Center for Visual Computing.
+                    <br><br>
+                The website template was borrowed from <a href="https://reconfusion.github.io/">Reconfusion</a>, <a href="http://mgharbi.com/">Michaël Gharbi,</a> and <a href="https://dorverbin.github.io/refnerf">Ref-NeRF</a>.
+                </p>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+</body>
+</html>
