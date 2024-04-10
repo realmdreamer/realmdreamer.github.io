@@ -241,10 +241,10 @@
                 <div class="text-center">
                     <div class="video-container">
                         <video class="video" style="height: 480px; max-width: 100%;" m id="compVideo0" loop playsinline autoplay muted>
-                            <source src="videos/results/rgb/boat.mp4" />
+                            <source src="videos/results/rgb/bear.mp4" />
                         </video>
                         <video class="video" style="height: 480px; max-width: 100%;" id="compVideo1" loop playsinline autoplay muted hidden>
-                            <source src="videos/results/depth/boat.mp4" />
+                            <source src="videos/results/depth/bear.mp4" />
                         </video>
                     </div>
                     <div class="text-center" style="color: black;" id="mode-pills">
@@ -289,7 +289,7 @@
                     </script>
 
                     <div class="pill-row scene-pills" id="scene-pills">
-                        <span class="pill scene-pill" data-value="bear" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                        <span class="pill scene-pill active" data-value="bear" onclick="selectCompVideo(activeMethodPill, this, 3)">
                             <img class="thumbnail-img" src="thumbnails/bear.png" alt="bear" width="64">
                         </span>
                         <span class="pill scene-pill" data-value="bedroom3" onclick="selectCompVideo(activeMethodPill, this, 3)">
@@ -298,7 +298,7 @@
                         <span class="pill scene-pill" data-value="bust" onclick="selectCompVideo(activeMethodPill, this, 3)">
                             <img class="thumbnail-img" src="thumbnails/bust.png" alt="bust" width="64">
                         </span>
-                        <span class="pill scene-pill active" data-value="boat" onclick="selectCompVideo(activeMethodPill, this, 3)">
+                        <span class="pill scene-pill" data-value="boat" onclick="selectCompVideo(activeMethodPill, this, 3)">
                             <img class="thumbnail-img" src="thumbnails/boat.jpg" alt="boat" width="64">
                         </span>
                         <span class="pill scene-pill" data-value="lavender" onclick="selectCompVideo(activeMethodPill, this, 3)">
@@ -424,9 +424,9 @@
         </div>
     </div>
     <div class="container">
-        <div class="row py-2 mt-5">
-            <div class="col-2"></div>
-            <div class="col-8">
+        <div class="row py-2 mt-5 justify-content-center">
+            <div class="col-md-2"></div>
+            <div class="col-10 col-md-8">
                 <h1 class="text-center pb-5">
                     <b>How?</h1></b>
                 </h1>
@@ -449,7 +449,7 @@
                 </p>
 
             </div>
-            <div class="col-2"></div>
+            <div class="col-md-2"></div>
         </div>
     </div>
 
