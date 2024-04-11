@@ -290,9 +290,9 @@
     <div class="desktop-content">
         <div class="container-fluid h-0 h-md-0 w-100 d-flex flex-column custom-spacing text-center" style="padding-top: 0px;">
             <div class="row justify-content-center mb-3 order-md-last">
-                <div class="col-12">
-                    <!-- Removed "controls" and added "style='pointer-events: none;'" to prevent interactions -->
-                    <video id="myVideo" class="img-fluid w-100 w-md-50" loop autoplay muted playsinline controls poster="videos/teaser/poster.png">
+                <div class="col-12" id="videoContainer">
+                    <!-- Note: Removed "controls" attribute to align with the intention of autoplay without direct user interaction -->
+                    <video id="myVideo" class="img-fluid w-100 w-md-50" loop autoplay muted playsinline poster="videos/teaser/poster.png" controls>
                         <source src="videos/teaser/teaser_twitter.mp4" type="video/mp4">
                     </video>
                 </div>
