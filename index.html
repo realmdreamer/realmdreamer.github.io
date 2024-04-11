@@ -76,7 +76,7 @@
                 <div class="container-fluid h-0 h-md-0 w-100 d-flex flex-column custom-spacing text-center" style="padding-top: 0px;">
                     <div class="row justify-content-center mb-3">
                         <div class="col-12">
-                            <ul class="list-inline author h6">
+                            <ul class="list-inline author-desktop h6">
                                 <li>
                                     <a href="https://jaidevshriram.com//" target="_blank" class="h6">
                                         Jaidev Shriram
@@ -155,7 +155,7 @@
             </div>
             <div class="row justify-content-center mb-3">
                 <div class="col-12">
-                    <ul class="list-inline author h6">
+                    <ul class="list-inline author-mobile h6">
                         <li>
                             <a href="https://jaidevshriram.com//" target="_blank" class="h6">
                                 Jaidev Shriram
@@ -267,40 +267,61 @@
     </div> -->
 
 
-    <div class="container" id="main">
-
-        <div class="row py-5 align-items-center justify-content-center" id="abstract">
-            <div class="col-md-6">
-                <h1 class="text-center pb-5 text-bold">
-                    <b>Abstract</b>
-                </h1>
-                <p class="text-justify">
-                    We introduce <b>RealmDreamer</b>, a technique for generation of general forward-facing 3D scenes from text descriptions. Our technique optimizes a 3D Gaussian Splatting representation to match complex text prompts. We initialize these splats by utilizing the state-of-the-art text-to-image generators, lifting their samples into 3D, and computing the occlusion volume. We then optimize this representation across multiple views as a 3D inpainting task with image-conditional diffusion models. To learn correct geometric structure, we incorporate a depth diffusion model by conditioning on the samples from the inpainting model, giving rich geometric structure. Finally, we finetune the model using sharpened samples from image generators. Notably, our technique does not require training on any scene-specific dataset and can synthesize a variety of high-quality 3D scenes in different styles, consisting of multiple objects. Its generality additionally allows 3D synthesis from a single image.
-                </p>
-            </div>
-            <!-- <div class="col--md-6">
-                <video class="img-fluid" loop autoplay muted>
-                    <source src="videos/teaser/teaser_twitter.mp4" />
-                </video>
-            </div> -->
-        </div>
-        <br>
-    </div>
-
     <div class="desktop-content">
-        <div class="container-fluid h-0 h-md-0 w-100 d-flex flex-column custom-spacing text-center" style="padding-top: 0px;">
-            <h1 class="text-center pb-5">
-                <b>Teaser</b>
-            </h1>
-            <div class="row justify-content-center mb-3 order-md-last">
-                <div class="col-12" id="videoContainer">
-                    <!-- Note: Removed "controls" attribute to align with the intention of autoplay without direct user interaction -->
-                    <video id="myVideo" class="img-fluid w-100 w-md-50" loop autoplay muted playsinline poster="videos/teaser/poster.png" controls>
-                        <source src="videos/teaser/teaser_twitter.mp4" type="video/mp4">
+        <div class="container-fluid px-5" id="main">
+
+            <div class="row py-5 align-items-center justify-content-center" id="abstract">
+                <div class="col-md-5">
+                    <h1 class="text-center pb-5 text-bold">
+                        <b>Abstract</b>
+                    </h1>
+                    <p class="text-justify px-5">
+                        We introduce <b>RealmDreamer</b>, a technique for generation of general forward-facing 3D scenes from text descriptions. Our technique optimizes a 3D Gaussian Splatting representation to match complex text prompts. We initialize these splats by utilizing the state-of-the-art text-to-image generators, lifting their samples into 3D, and computing the occlusion volume. We then optimize this representation across multiple views as a 3D inpainting task with image-conditional diffusion models. To learn correct geometric structure, we incorporate a depth diffusion model by conditioning on the samples from the inpainting model, giving rich geometric structure. Finally, we finetune the model using sharpened samples from image generators. Notably, our technique does not require training on any scene-specific dataset and can synthesize a variety of high-quality 3D scenes in different styles, consisting of multiple objects. Its generality additionally allows 3D synthesis from a single image.
+                    </p>
+                </div>
+
+                <div class="col-md-7">
+                    <video class="img-fluid" loop autoplay muted>
+                        <source src="videos/teaser/teaser_twitter.mp4" />
                     </video>
                 </div>
             </div>
-        </div>
+            <br>
+        </div>  
+        
+        <div class="container-fluid" id="main">
+
+            <div class="row py-5 align-items-center justify-content-center" id="abstract">
+                <div class="col-12 text-center">
+                    <video id="myVideo" class="img-fluid w-50 w-md-75 mx-auto" loop autoplay muted playsinline poster="videos/teaser/poster.png" controls alt="RealmDreamer Teaser">
+                        <source src="videos/teaser/teaser_twitter.mp4" />
+                    </video>
+                </div>
+            </div>
+            <br>
+        </div>  
+    </div>
+
+    <div class="mobile-content">
+        <div class="container" id="main">
+
+            <div class="row py-5 align-items-center justify-content-center" id="abstract">
+                <div class="col-md-6">
+                    <h1 class="text-center pb-5 text-bold">
+                        <b>Abstract</b>
+                    </h1>
+                    <p class="text-justify">
+                        We introduce <b>RealmDreamer</b>, a technique for generation of general forward-facing 3D scenes from text descriptions. Our technique optimizes a 3D Gaussian Splatting representation to match complex text prompts. We initialize these splats by utilizing the state-of-the-art text-to-image generators, lifting their samples into 3D, and computing the occlusion volume. We then optimize this representation across multiple views as a 3D inpainting task with image-conditional diffusion models. To learn correct geometric structure, we incorporate a depth diffusion model by conditioning on the samples from the inpainting model, giving rich geometric structure. Finally, we finetune the model using sharpened samples from image generators. Notably, our technique does not require training on any scene-specific dataset and can synthesize a variety of high-quality 3D scenes in different styles, consisting of multiple objects. Its generality additionally allows 3D synthesis from a single image.
+                    </p>
+                </div>
+                <!-- <div class="col--md-6">
+                    <video class="img-fluid" loop autoplay muted>
+                        <source src="videos/teaser/teaser_twitter.mp4" />
+                    </video>
+                </div> -->
+            </div>
+            <br>
+        </div>    
     </div>
 
     <div class="container-fluid">

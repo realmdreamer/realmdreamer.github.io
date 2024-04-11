@@ -124,6 +124,26 @@ a:hover {
   text-decoration: none;
 }
 
+.author-mobile a {
+  color: #4b99b3 !important;
+  transition: 0.2s color;
+}
+
+.author-mobile a:hover {
+  color: #1a5a6f!important;
+  transition: 0.2s color;
+}
+
+.author-desktop a {
+  color: #c0ebff !important;
+  transition: 0.2s color;
+}
+
+.author-desktop a:hover {
+  color: #4b99b3!important;
+  transition: 0.2s color;
+}
+
 body,
 td,
 th,
