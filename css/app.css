@@ -1,3 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+.mobile-content {
+  display: none;
+}
+
+/* Desktop-specific styles */
+@media (min-width: 768px) {
+  /* Hide mobile section */
+  .mobile-content {
+      display: none;
+  }
+  /* Show desktop section */
+  .desktop-content {
+      display: block;
+  }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 767px) {
+  /* Show mobile section */
+  .mobile-content {
+      display: block;
+  }
+  /* Hide desktop section */
+  .desktop-content {
+      display: none;
+  }
+}
+
+
 .bg-customcustom {
   background-color: #333333; /* Slightly darker than bg-light */
 }
@@ -6,6 +38,10 @@
   color: #179cd0;
   text-decoration: none;
 }
+.custom-spacing > :first-child {
+  margin-top: 40px; /* Applies only to the first child element */
+}
+
 
 /* latin-ext */
 @font-face {
@@ -88,13 +124,34 @@ a:hover {
   text-decoration: none;
 }
 
+.author-mobile a {
+  color: #4b99b3 !important;
+  transition: 0.2s color;
+}
+
+.author-mobile a:hover {
+  color: #1a5a6f!important;
+  transition: 0.2s color;
+}
+
+.author-desktop a {
+  color: #c0ebff !important;
+  transition: 0.2s color;
+}
+
+.author-desktop a:hover {
+  color: #4b99b3!important;
+  transition: 0.2s color;
+}
+
 body,
 td,
 th,
 tr,
 p,
 a {
-  font-family: 'Lato', Verdana, Helvetica, sans-serif;
+  /* font-family: 'Lato', Verdana, Helvetica, sans-serif; */
+  font-family: 'Nunito Sans', sans-serif;
   /* font-size: 14px */
 }
 
@@ -103,8 +160,9 @@ strong {
   /* font-size: 14px; */
 }
 
-heading {
-  font-family: 'Lato', Verdana, Helvetica, sans-serif;
+heading, h1, h2, h3, h4, h5, h6 {
+  /* font-family: 'Lato', Verdana, Helvetica, sans-serif; */
+  font-family: 'Roboto', sans-serif;
   /* font-size: 22px; */
 }
 
@@ -416,11 +474,13 @@ html, body {
 
 .author {
   a {
-    color: #179cd0!important;
+    color: #ff8b5e !important;
+    transition: 0.2s color;
   }
 
   a:hover {
-    color: #f09228!important;
+    color: #bc6501!important;
+    transition: 0.2s color;
   }
 
   /* color: #fff!important; */
