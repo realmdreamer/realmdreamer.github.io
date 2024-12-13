@@ -533,6 +533,10 @@ html, body {
   /* Removed top and transform properties */
 }
 
+.orange {
+  color: #ff8b5e;
+}
+
 
 .xkcd {
   font-family: 'xkcd', sans-serif;
