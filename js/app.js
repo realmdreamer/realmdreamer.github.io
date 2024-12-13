@@ -97,6 +97,12 @@ function selectCompVideo(methodPill, scenePill, n_views, modePill) {
         case 'kitchen':
             promptTextBox.text("An old charming stone kitchen, 4k image, photorealistic, high detail");
             break;
+        case 'bohemian':
+            promptTextBox.text("A bohemian living room, colorful textiles, vibrant, eclectic, 4k image, photorealistic");
+            break;
+        case 'japan':
+            promptTextBox.text("A sunny royal traditional Japanese bedroom, 4k image, ornate, high detail");
+            break;
         default:
             promptTextBox.text("Missing prompt...");
             break;
